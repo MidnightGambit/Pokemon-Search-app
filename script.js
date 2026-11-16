@@ -1,76 +1,65 @@
-document.getElementById("search-button").addEventListener("click", function() {
+// Store each Pokemon once and index both supported search keys.
+const pokemonRecords = [
+  {
+    name: "PIKACHU",
+    id: "25",
+    weight: 60,
+    height: 4,
+    hp: 35,
+    attack: 55,
+    defense: 40,
+    specialAttack: 50,
+    specialDefense: 50,
+    speed: 90,
+    types: ["ELECTRIC"],
+    sprite: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png"
+  },
+  {
+    name: "GENGAR",
+    id: "94",
+    weight: 405,
+    height: 15,
+    hp: 60,
+    attack: 65,
+    defense: 60,
+    specialAttack: 130,
+    specialDefense: 75,
+    speed: 110,
+    types: ["GHOST", "POISON"],
+    sprite: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
+  }
+];
+const pokemonByQuery = new Map();
+for (const pokemon of pokemonRecords) {
+  pokemonByQuery.set(pokemon.id, pokemon);
+  pokemonByQuery.set(pokemon.name.toLowerCase(), pokemon);
+}
+
+function clearPokemon() {
+  for (const id of [
+    "pokemon-name", "pokemon-id", "weight", "height", "hp", "attack",
+    "defense", "special-attack", "special-defense", "speed"
+  ]) {
+    document.getElementById(id).textContent = "";
+  }
+  document.getElementById("types").innerHTML = "";
+  const sprite = document.getElementById("sprite");
+  sprite.style.display = "none";
+  sprite.removeAttribute("src");
+  sprite.alt = "";
+}
+
+function searchPokemon() {
   const input = document.getElementById("search-input").value.trim().toLowerCase();
-  const PIKACHU_ID = "25";
-  const GENGAR_ID = "94";
-  const PIKACHU_NAME = "pikachu";
-  const GENGAR_NAME = "gengar";
-
-  console.log("Input value: ", input); // Debugging
-
-  // Check if input is empty
   if (!input) {
     alert("Please enter a Pokémon name or ID.");
-    return; // Stop execution if input is empty
+    return;
   }
-
-  // Convert the input to a number if it's numeric, otherwise keep it as a string
-  const numericInput = !isNaN(input) ? input : null;
-
-  const pokemonInfo = {
-    [PIKACHU_NAME]: {
-      name: "PIKACHU",
-      id: PIKACHU_ID,
-      weight: 60,
-      height: 4,
-      hp: 35,
-      attack: 55,
-      defense: 40,
-      specialAttack: 50,
-      specialDefense: 50,
-      speed: 90,
-      types: ["ELECTRIC"],
-      sprite: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png"
-    },
-    [PIKACHU_ID]: {
-      name: "PIKACHU",
-      id: PIKACHU_ID,
-      weight: 60,
-      height: 4,
-      hp: 35,
-      attack: 55,
-      defense: 40,
-      specialAttack: 50,
-      specialDefense: 50,
-      speed: 90,
-      types: ["ELECTRIC"],
-      sprite: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png"
-    },
-    [GENGAR_ID]: {
-      name: "GENGAR",
-      id: GENGAR_ID,
-      weight: 405,
-      height: 15,
-      hp: 60,
-      attack: 65,
-      defense: 60,
-      specialAttack: 130,
-      specialDefense: 75,
-      speed: 110,
-      types: ["GHOST", "POISON"],
-      sprite: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/94.png"
-    }
-  };
-
-  // Clear previous types and image
+  clearPokemon();
+  const pokemon = pokemonByQuery.get(input);
   const typesElement = document.getElementById("types");
-  typesElement.innerHTML = '';  // Clear previous types
-  document.getElementById("sprite").style.display = "none"; // Hide the sprite initially
-
-  // Check if input matches a Pokémon by name or ID (string or numeric input)
-  const pokemon = pokemonInfo[numericInput] || pokemonInfo[input];
   if (pokemon) {
     // Populate the Pokémon data in the UI
-    console.log("Setting Pokémon data:", pokemon); // Debugging line
     document.getElementById("pokemon-name").textContent = pokemon.name;
     document.getElementById("pokemon-id").textContent = `#${pokemon.id}`;
     document.getElementById("weight").textContent = `Weight: ${pokemon.weight}`;
@@ -93,9 +82,12 @@ document.getElementById("search-button").addEventListener("click", function() {
     // Show the sprite
     const spriteImg = document.getElementById("sprite");
     spriteImg.src = pokemon.sprite;
+    spriteImg.alt = pokemon.name;
     spriteImg.style.display = "block"; // Show the sprite image
   } else {
     // If Pokémon not found, alert the user
     alert("Pokémon not found");
   }
-});
+}
+
+document.getElementById("search-button").addEventListener("click", searchPokemon);
