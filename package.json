@@ -1,0 +1,10 @@
+{
+  "name": "pokemon-search-app",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "test": "node --test script.test.cjs",
+    "check": "node --check script.js && node --test script.test.cjs"
+  },
+  "engines": { "node": ">=22" }
+}
